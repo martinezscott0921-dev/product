@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>呆呆Chat</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect rx='14' width='64' height='64' fill='%23d4532b'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='34' font-family='serif' fill='%23fff8f3'%3E呆%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --bg: #efe6d8;
+      --ink: #241c16;
+      --muted: #74685c;
+      --card: #fffaf4;
+      --line: #e4d5c4;
+      --accent: #d4532b;
+      --accent-dark: #b5431d;
+      --accent-ink: #fff8f3;
+      --user: #2c241e;
+      --danger: #8d2b22;
+      --danger-bg: #fdecea;
+      --shadow: 0 22px 50px rgba(70, 42, 18, 0.08);
+      --radius: 18px;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(1100px 480px at 8% -10%, #f6d4c2 0%, transparent 58%),
+        radial-gradient(900px 420px at 110% 0%, #efe2b6 0%, transparent 52%),
+        var(--bg);
+    }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: 0.55; }
+
+    .view { display: none; height: 100%; }
+    .view.active { display: flex; }
+
+    #view-setup {
+      align-items: center;
+      justify-content: center;
+      padding: 28px 16px;
+    }
+    .setup-card {
+      width: min(760px, 100%);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 36px 36px 28px;
+    }
+    .brand-lockup { display: flex; gap: 16px; align-items: center; margin-bottom: 22px; }
+    .seal {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-family: "Iowan Old Style", Palatino, "Songti SC", "Noto Serif SC", serif;
+      font-size: 32px;
+      line-height: 1;
+      flex: none;
+    }
+    h1 {
+      margin: 0;
+      font-family: "Iowan Old Style", Palatino, "Songti SC", "Noto Serif SC", serif;
+      font-size: 40px;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+    }
+    .lede { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
+    .fields { display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px; }
+    label { display: flex; flex-direction: column; gap: 8px; font-size: 13px; font-weight: 650; }
+    input[type="text"], input[type="password"], input[type="url"], textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      padding: 11px 12px;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus, .picker-btn:focus-visible, button:focus-visible {
+      border-color: #e0a089;
+      box-shadow: 0 0 0 3px rgba(212, 83, 43, 0.16);
+    }
+    .key-wrap { position: relative; }
+    .key-wrap input { padding-right: 64px; }
+    .ghost {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 0 10px;
+    }
+    .key-wrap .ghost {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 32px;
+      border-radius: 8px;
+    }
+    .form-error {
+      min-height: 22px;
+      margin: 10px 0 0;
+      color: var(--danger);
+      font-size: 13px;
+    }
+    .primary, .export-btn, .send-all, .send-one, .export-one {
+      border: 0;
+      border-radius: 12px;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 680;
+    }
+    .primary { width: 100%; margin-top: 6px; padding: 13px 16px; font-size: 16px; }
+    .primary:hover, .export-btn:hover, .send-all:hover, .send-one:hover, .export-one:hover { background: var(--accent-dark); }
+    .hint { margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+    #view-chat { flex-direction: column; min-height: 0; }
+    .topbar, .dock {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255, 250, 244, 0.9);
+      border-color: var(--line);
+      backdrop-filter: blur(10px);
+    }
+    .topbar { border-bottom: 1px solid var(--line); justify-content: space-between; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand .seal { width: 36px; height: 36px; border-radius: 11px; font-size: 20px; }
+    .brand h1 { font-size: 28px; }
+    .text-btn { border: 0; background: transparent; color: var(--muted); padding: 6px 8px; border-radius: 8px; }
+    .text-btn:hover { background: rgba(36, 28, 22, 0.05); color: var(--ink); }
+    .model-status { margin: 0; color: var(--muted); font-size: 12px; }
+    .export-btn, .send-all { padding: 10px 14px; white-space: nowrap; }
+    .board {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      gap: 12px;
+      padding: 12px;
+    }
+    .board[data-count="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); }
+    .board[data-count="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); }
+    .board[data-count="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+    .board[data-count="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+
+    .window {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 28px rgba(70, 42, 18, 0.04);
+    }
+    .window-head, .composer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+    }
+    .window-head { border-bottom: 1px solid var(--line); }
+    .badge {
+      flex: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #f3e7da;
+      color: #6d5344;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .picker { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .picker-btn, .custom-model {
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .export-one { padding: 8px 10px; border-radius: 10px; white-space: nowrap; font-size: 13px; }
+    .messages { flex: 1; min-height: 0; overflow: auto; padding: 8px 4px 12px; }
+    .empty {
+      margin: 28px 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .msg { display: flex; flex-direction: column; gap: 4px; margin: 10px 12px; max-width: 100%; }
+    .msg.user { align-items: flex-end; }
+    .msg.assistant, .msg.error { align-items: flex-start; }
+    .who { font-size: 12px; font-weight: 700; color: #6d5344; }
+    .bubble {
+      max-width: min(100%, 68ch);
+      border-radius: 14px;
+      padding: 10px 12px;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+    .msg.user .bubble { background: var(--user); color: #f8f1e7; border-bottom-right-radius: 5px; }
+    .msg.assistant .bubble { background: #fff; border: 1px solid var(--line); border-bottom-left-radius: 5px; }
+    .msg.error .who { color: var(--danger); }
+    .msg.error .bubble { background: var(--danger-bg); color: var(--danger); border: 1px solid #f0c2bc; }
+    .msg time { font-size: 11px; color: var(--muted); }
+    .bubble p { margin: 0 0 8px; }
+    .bubble p:last-child, .bubble ul:last-child, .bubble ol:last-child, .bubble pre:last-child, .bubble blockquote:last-child { margin-bottom: 0; }
+    .bubble ul, .bubble ol { margin: 0 0 8px; padding-left: 1.2em; }
+    .bubble code { font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace; font-size: 0.92em; background: #f6eee4; padding: 0 4px; border-radius: 4px; }
+    .msg.user .bubble code, .msg.user .bubble pre { background: #3d342c; color: #f6eadc; }
+    .bubble pre { margin: 0 0 8px; padding: 8px 10px; overflow: auto; border-radius: 8px; background: #f6eee4; }
+    .bubble pre code { padding: 0; background: transparent; }
+    .bubble blockquote { margin: 0 0 8px; padding-left: 10px; border-left: 3px solid #e4c7b4; color: inherit; }
+    .bubble table { border-collapse: collapse; width: 100%; font-size: 13px; margin-bottom: 8px; }
+    .bubble th, .bubble td { border: 1px solid var(--line); padding: 4px 6px; text-align: left; vertical-align: top; }
+    .msg.user .bubble a { color: #ffd2c2; }
+    .msg.assistant .bubble a { color: var(--accent-dark); }
+    .reason { margin-bottom: 8px; font-size: 13px; color: var(--muted); }
+    .reason summary { cursor: pointer; }
+    .wait { color: var(--muted); }
+    .composer { border-top: 1px solid var(--line); align-items: flex-end; }
+    .icon-btn {
+      flex: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #6d5344;
+      display: grid;
+      place-items: center;
+    }
+    .icon-btn:hover { background: #f8efe6; }
+    textarea {
+      resize: none;
+      min-height: 40px;
+      max-height: 120px;
+      line-height: 1.45;
+    }
+    .send-one { flex: none; height: 40px; padding: 0 12px; border-radius: 10px; }
+
+    .dock { border-top: 1px solid var(--line); align-items: flex-end; }
+    .count-box { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; min-width: 132px; }
+    .count-box select { font-weight: 600; }
+    #broadcast { flex: 1; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(12px);
+      background: #2c241e;
+      color: #fff8f3;
+      padding: 10px 14px;
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.2s ease;
+      z-index: 80;
+      font-size: 13px;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .picker-pop {
+      position: fixed;
+      z-index: 40;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 320px;
+    }
+    .picker-pop[hidden] { display: none; }
+    .picker-list { overflow: auto; min-height: 0; }
+    .picker-group { margin: 8px 6px 4px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .picker-item, .picker-custom {
+      width: 100%;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      border-radius: 8px;
+      padding: 7px 8px;
+    }
+    .picker-item small, .picker-btn small { color: var(--muted); font-weight: 500; }
+    .picker-item.active, .picker-item:hover, .picker-custom:hover { background: #f8efe6; }
+    .picker-note { margin: 4px 6px 8px; color: var(--muted); font-size: 12px; }
+    #selftest-result { position: fixed; left: 8px; bottom: 8px; z-index: 90; white-space: pre-wrap; background: #fff; padding: 8px; border-radius: 8px; }
+
+    @media (max-width: 860px) {
+      .fields { grid-template-columns: 1fr; }
+      .setup-card { padding: 24px 18px; }
+      h1 { font-size: 32px; }
+      .board { display: flex; flex-direction: column; overflow: auto; }
+      .window { min-height: 70vh; }
+      .topbar, .dock { flex-wrap: wrap; }
+      .send-all, .export-btn { width: 100%; }
+      #broadcast { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <section id="view-setup" class="view active">
+    <form id="setup-form" class="setup-card">
+      <div class="brand-lockup">
+        <div class="seal" aria-hidden="true">呆</div>
+        <div>
+          <h1>呆呆Chat</h1>
+          <p class="lede">用你自己的 API Key，把同一个问题同时交给多个模型。</p>
+        </div>
+      </div>
+      <div class="fields">
+        <label>API 地址
+          <input id="api-base" type="url" required placeholder="https://aihubmix.com/v1" value="https://aihubmix.com/v1" autocomplete="off">
+        </label>
+        <label>API Key
+          <span class="key-wrap">
+            <input id="api-key" type="password" required placeholder="在此输入 API Key" autocomplete="off">
+            <button type="button" class="ghost" id="toggle-key" aria-label="显示 API Key">显示</button>
+          </span>
+        </label>
+      </div>
+      <p class="form-error" id="form-error" role="alert"></p>
+      <button type="submit" class="primary">保存</button>
+      <p class="hint">密钥只保存在这台浏览器的本地存储中。对话请求会从你的浏览器直接发往上面的接口地址。</p>
+    </form>
+  </section>
+
+  <section id="view-chat" class="view" aria-label="模型对话页">
+    <header class="topbar">
+      <div class="brand">
+        <div class="seal" aria-hidden="true">呆</div>
+        <div>
+          <h1>呆呆Chat</h1>
+          <p class="model-status" id="model-status">正在准备模型列表</p>
+        </div>
+        <button type="button" class="text-btn" id="edit-key">修改密钥</button>
+      </div>
+      <button type="button" class="export-btn" id="export-all">导出所有对话表格</button>
+    </header>
+    <main id="board" class="board" data-count="2"></main>
+    <footer class="dock">
+      <label class="count-box">窗口数量
+        <select id="window-count" aria-label="窗口数量选择">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="6">6</option>
+        </select>
+      </label>
+      <textarea id="broadcast" rows="1" placeholder="输入文本，发送给当前所有模型"></textarea>
+      <button type="button" class="send-all" id="send-all">发送给所有模型</button>
+    </footer>
+  </section>
+  <div id="toast" class="toast" role="status"></div>
+  <div id="selftest-result" hidden></div>
+
+  <script>
+    const SETTINGS_KEY = "daidai-chat-settings";
+    const SESSION_KEY = "daidai-chat-session";
+    const CSV_HEADERS = ["身份", "发送内容", "发送时间", "模型名称"];
+
+    const state = {
+      apiBase: "https://aihubmix.com/v1",
+      apiKey: "",
+      count: 2,
+      models: [],
+      windows: [],
+      openPicker: -1
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const fetchImpl = (...args) => (window.__fetch || window.fetch)(...args);
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function formatTime(date) {
+      const d = date instanceof Date ? date : new Date(date);
+      const p = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+    }
+
+    function normalizeBase(raw) {
+      const trimmed = String(raw || "").trim();
+      if (!trimmed) throw new Error("请填写 API 地址");
+      const withProto = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+      let url;
+      try { url = new URL(withProto); } catch { throw new Error("API 地址格式不正确"); }
+      if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error("API 地址只支持 http 或 https");
+      const path = url.pathname.replace(/\/+$/, "");
+      return url.origin + (path || "/v1");
+    }
+
+    function inlineMarkdown(source) {
+      const codes = [];
+      let text = escapeHtml(source).replace(/`([^`]+)`/g, (_, code) => {
+        codes.push(code);
+        return `\u0000${codes.length - 1}\u0000`;
+      });
+      text = text.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, url) => {
+        const raw = url.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"');
+        if (!/^(https?:|mailto:)/i.test(raw)) return label;
+        return `<a href="${escapeHtml(raw)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+      });
+      text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      text = text.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+      text = text.replace(/~~([^~]+)~~/g, "<del>$1</del>");
+      text = text.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+      return text.replace(/\u0000(\d+)\u0000/g, (_, index) => `<code>${codes[index]}</code>`);
+    }
+
+    function renderTextBlocks(text) {
+      const lines = String(text || "").split("\n");
+      let html = "";
+      let para = [];
+      let i = 0;
+      const flush = () => {
+        if (!para.length) return;
+        html += `<p>${para.map(inlineMarkdown).join("<br>")}</p>`;
+        para = [];
+      };
+      while (i < lines.length) {
+        const line = lines[i];
+        if (!line.trim()) { flush(); i += 1; continue; }
+        const heading = /^(#{1,6})\s+(.*)$/.exec(line);
+        if (heading) {
+          flush();
+          const level = heading[1].length;
+          html += `<h${level}>${inlineMarkdown(heading[2])}</h${level}>`;
+          i += 1;
+          continue;
+        }
+        if (/^(-{3,}|\*{3,})$/.test(line.trim())) { flush(); html += "<hr>"; i += 1; continue; }
+        if (/^>\s?/.test(line)) {
+          flush();
+          const quoted = [];
+          while (i < lines.length && /^>\s?/.test(lines[i])) {
+            quoted.push(lines[i].replace(/^>\s?/, ""));
+            i += 1;
+          }
+          html += `<blockquote>${renderTextBlocks(quoted.join("\n"))}</blockquote>`;
+          continue;
+        }
+        if (/^\s*[-*+]\s+/.test(line)) {
+          flush();
+          const items = [];
+          while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+            items.push(lines[i].replace(/^\s*[-*+]\s+/, ""));
+            i += 1;
+          }
+          html += `<ul>${items.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("")}</ul>`;
+          continue;
+        }
+        if (/^\s*\d+[.)]\s+/.test(line)) {
+          flush();
+          const items = [];
+          while (i < lines.length && /^\s*\d*\d+[.)]\s+/.test(lines[i])) {
+            items.push(lines[i].replace(/^\s*\d+[.)]\s+/, ""));
+            i += 1;
+          }
+          html += `<ol>${items.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("")}</ol>`;
+          continue;
+        }
+        if (line.includes("|") && i + 1 < lines.length && /^\s*\|?\s*:?-{3,}/.test(lines[i + 1])) {
+          flush();
+          const parseRow = (row) => row.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((cell) => cell.trim());
+          const head = parseRow(line);
+          i += 2;
+          const body = [];
+          while (i < lines.length && lines[i].includes("|") && lines[i].trim()) {
+            body.push(parseRow(lines[i]));
+            i += 1;
+          }
+          html += `<table><thead><tr>${head.map((cell) => `<th>${inlineMarkdown(cell)}</th>`).join("")}</tr></thead><tbody>${body.map((row) => `<tr>${row.map((cell) => `<td>${inlineMarkdown(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+          continue;
+        }
+        para.push(line);
+        i += 1;
+      }
+      flush();
+      return html;
+    }
+
+    function renderMarkdown(source) {
+      const text = String(source ?? "").replace(/\r\n/g, "\n");
+      const chunks = [];
+      const fence = /```[^\n]*\n([\s\S]*?)```/g;
+      let last = 0;
+      let match;
+      while ((match = fence.exec(text))) {
+        chunks.push({ type: "text", value: text.slice(last, match.index) });
+        chunks.push({ type: "code", value: match[1].replace(/\n$/, "") });
+        last = fence.lastIndex;
+      }
+      chunks.push({ type: "text", value: text.slice(last) });
+      return chunks.map((chunk) => chunk.type === "code"
+        ? `<pre><code>${escapeHtml(chunk.value)}</code></pre>`
+        : renderTextBlocks(chunk.value)).join("");
+    }
+
+    function csvEscape(value) {
+      let text = String(value ?? "");
+      if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
+      if (/[",\n\r]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+      return text;
+    }
+
+    function toCsv(rows) {
+      const lines = [CSV_HEADERS, ...rows].map((row) => row.map(csvEscape).join(","));
+      return `\uFEFF${lines.join("\r\n")}`;
+    }
+
+    function collectRows(windows) {
+      const rows = [];
+      windows.forEach((pane) => {
+        pane.messages.forEach((message) => {
+          if (message.pending || (message.role !== "user" && message.role !== "assistant")) return;
+          rows.push([
+            message.role === "user" ? "用户" : "模型",
+            message.content || "",
+            message.time || "",
+            message.model || pane.model || ""
+          ]);
+        });
+      });
+      return rows;
+    }
+
+    function downloadCsv(rows, filename) {
+      const blob = new Blob([toCsv(rows)], { type: "text/csv;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    }
+
+    function fileStamp() {
+      return formatTime(new Date()).replace(/[-: ]/g, "");
+    }
+
+    function safeName(value) {
+      return String(value || "model").replace(/[\\/:*?"<>|\s]+/g, "_").slice(0, 40);
+    }
+
+    function blankWindow(model) {
+      return { model: model || "", draft: "", busy: false, abort: null, messages: [] };
+    }
+
+    function pickDefaults(models, count) {
+      const picks = [];
+      const seen = new Set();
+      models.forEach((model) => {
+        if (picks.length >= count || model.id === "auto") return;
+        const vendor = model.vendor || model.id;
+        if (seen.has(vendor)) return;
+        seen.add(vendor);
+        picks.push(model.id);
+      });
+      models.forEach((model) => {
+        if (picks.length < count && !picks.includes(model.id) && model.id !== "auto") picks.push(model.id);
+      });
+      while (picks.length < count) picks.push(picks[0] || "");
+      return picks;
+    }
+
+    function loadSettings() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "null");
+        if (saved?.apiBase) $("api-base").value = saved.apiBase;
+        if (saved?.apiKey) $("api-key").value = saved.apiKey;
+      } catch { /* keep defaults */ }
+    }
+
+    function saveSettings() {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify({ apiBase: state.apiBase, apiKey: state.apiKey }));
+    }
+
+    function saveSession() {
+      const payload = {
+        count: state.count,
+        windows: state.windows.map((pane) => ({
+          model: pane.model,
+          draft: pane.draft,
+          messages: pane.messages.filter((message) => !message.pending).map((message) => ({
+            role: message.role,
+            content: message.content,
+            reasoning: message.reasoning || "",
+            time: message.time,
+            model: message.model
+          }))
+        }))
+      };
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+    }
+
+    function loadSession() {
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+        if (!saved?.windows?.length) return false;
+        state.count = [2, 3, 4, 6].includes(Number(saved.count)) ? Number(saved.count) : 2;
+        state.windows = saved.windows.slice(0, state.count).map((pane) => ({
+          model: pane.model || "",
+          draft: pane.draft || "",
+          busy: false,
+          abort: null,
+          messages: Array.isArray(pane.messages) ? pane.messages : []
+        }));
+        while (state.windows.length < state.count) state.windows.push(blankWindow(""));
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function showView(name) {
+      $("view-setup").classList.toggle("active", name === "setup");
+      $("view-chat").classList.toggle("active", name === "chat");
+    }
+
+    function toast(message) {
+      const el = $("toast");
+      el.textContent = message;
+      el.classList.add("show");
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function modelLabel(model) {
+      if (!model) return "请选择模型";
+      const found = state.models.find((item) => item.id === model);
+      if (!found) return model;
+      if (!found.name || found.name === found.id) return found.id;
+      return `${found.name} · ${found.id}`;
+    }
+
+    function syncDrafts() {
+      document.querySelectorAll("[data-input]").forEach((input) => {
+        const pane = state.windows[Number(input.dataset.input)];
+        if (pane) pane.draft = input.value;
+      });
+      const broadcast = $("broadcast");
+      if (broadcast) state.broadcastDraft = broadcast.value;
+    }
+
+    function renderBoard() {
+      syncDrafts();
+      closePicker();
+      const board = $("board");
+      board.dataset.count = String(state.count);
+      board.innerHTML = state.windows.map((pane, index) => {
+        const known = state.models.some((model) => model.id === pane.model);
+        const custom = Boolean(pane.model) && !known;
+        return `
+          <section class="window" data-window="${index}">
+            <div class="window-head">
+              <div class="badge">${index + 1}</div>
+              <div class="picker">
+                <button type="button" class="picker-btn" data-action="toggle-picker" data-index="${index}" aria-haspopup="listbox" aria-expanded="false">${escapeHtml(modelLabel(pane.model))}</button>
+                <input class="custom-model" data-custom="${index}" placeholder="输入模型 ID" value="${custom ? escapeHtml(pane.model) : ""}" ${custom ? "" : "hidden"}>
+              </div>
+              <button type="button" class="export-one" data-action="export-one" data-index="${index}">导出当前对话</button>
+            </div>
+            <div class="messages" data-messages="${index}"></div>
+            <form class="composer" data-composer="${index}">
+              <button type="button" class="icon-btn" data-action="clear" data-index="${index}" title="清除当前对话" aria-label="清除当前对话">
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10M6.2 4.4V3.2h3.6v1.2M4.4 4.5l.6 8.2h5.9l.6-8.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              </button>
+              <textarea data-input="${index}" rows="1" placeholder="给这个模型发送消息">${escapeHtml(pane.draft || "")}</textarea>
+              <button type="submit" class="send-one" data-index="${index}" ${pane.busy ? "disabled" : ""}>${pane.busy ? "回复中" : "发送"}</button>
+            </form>
+          </section>`;
+      }).join("");
+      state.windows.forEach((_, index) => renderMessages(index));
+      const count = $("window-count");
+      if (count) count.value = String(state.count);
+      const broadcast = $("broadcast");
+      if (broadcast && state.broadcastDraft != null) broadcast.value = state.broadcastDraft;
+    }
+
+    function messageHtml(message) {
+      const who = message.role === "user" ? "用户" : message.role === "assistant" ? "模型" : "提示";
+      const reasoning = message.reasoning
+        ? `<details class="reason"><summary>思考过程</summary>${renderMarkdown(message.reasoning)}</details>`
+        : "";
+      const body = message.content
+        ? renderMarkdown(message.content)
+        : (message.pending ? '<span class="wait">正在回复…</span>' : "");
+      const time = message.time ? `<time datetime="${escapeHtml(message.time)}">${escapeHtml(message.time)}</time>` : "";
+      return `<article class="msg ${message.role}"><div class="who">${who}</div><div class="bubble">${reasoning}<div class="body">${body}</div></div>${time}</article>`;
+    }
+
+    function renderMessages(index) {
+      const box = document.querySelector(`[data-messages="${index}"]`);
+      if (!box) return;
+      const pane = state.windows[index];
+      const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 90;
+      if (!pane.messages.length) {
+        box.innerHTML = '<div class="empty">这里还没有对话。在下方输入后单独发送，或在页面底部一次发给所有模型。</div>';
+        return;
+      }
+      box.innerHTML = pane.messages.map(messageHtml).join("");
+      if (nearBottom) box.scrollTop = box.scrollHeight;
+    }
+
+    function patchComposer(index) {
+      const pane = state.windows[index];
+      const button = document.querySelector(`[data-composer="${index}"] .send-one`);
+      if (button) {
+        button.disabled = pane.busy;
+        button.textContent = pane.busy ? "回复中" : "发送";
+      }
+    }
+
+    function setCount(nextCount, { force = false } = {}) {
+      const count = Number(nextCount);
+      if (![2, 3, 4, 6].includes(count) || count === state.count) {
+        $("window-count").value = String(state.count);
+        return;
+      }
+      syncDrafts();
+      if (!force && count < state.windows.length) {
+        const removed = state.windows.slice(count);
+        const dirty = removed.some((pane) => pane.messages.length || pane.draft);
+        if (dirty && !window.confirm("减少窗口会移除多出来的对话，确定继续吗？")) {
+          $("window-count").value = String(state.count);
+          return;
+        }
+        removed.forEach((pane) => pane.abort?.abort());
+      }
+      const defaults = pickDefaults(state.models, count);
+      const next = state.windows.slice(0, count);
+      while (next.length < count) next.push(blankWindow(defaults[next.length] || ""));
+      state.windows = next;
+      state.count = count;
+      renderBoard();
+      saveSession();
+    }
+
+    function filteredModels(query) {
+      const needle = query.trim().toLowerCase();
+      const list = needle
+        ? state.models.filter((model) => `${model.name} ${model.id} ${model.vendor || ""}`.toLowerCase().includes(needle))
+        : state.models;
+      return list.slice(0, 80);
+    }
+
+    function closePicker() {
+      document.querySelectorAll(".picker-pop").forEach((node) => node.remove());
+      document.querySelectorAll(".picker-btn[aria-expanded='true']").forEach((button) => button.setAttribute("aria-expanded", "false"));
+      state.openPicker = -1;
+    }
+
+    function openPicker(index) {
+      closePicker();
+      const button = document.querySelector(`.picker-btn[data-index="${index}"]`);
+      if (!button) return;
+      state.openPicker = index;
+      button.setAttribute("aria-expanded", "true");
+      const pop = document.createElement("div");
+      pop.className = "picker-pop";
+      pop.innerHTML = '<input class="picker-search" placeholder="搜索模型名称或 ID" aria-label="搜索模型"><div class="picker-list" role="listbox"></div>';
+      document.body.appendChild(pop);
+      const rect = button.getBoundingClientRect();
+      const width = Math.max(rect.width, 280);
+      pop.style.width = `${width}px`;
+      pop.style.left = `${Math.min(rect.left, window.innerWidth - width - 8)}px`;
+      const below = window.innerHeight - rect.bottom;
+      if (below < 280 && rect.top > below) pop.style.top = `${Math.max(8, rect.top - 320)}px`;
+      else pop.style.top = `${rect.bottom + 6}px`;
+      const search = pop.querySelector(".picker-search");
+      const paint = () => {
+        const matches = filteredModels(search.value);
+        const groups = new Map();
+        matches.forEach((model) => {
+          const vendor = model.vendor || "其他";
+          if (!groups.has(vendor)) groups.set(vendor, []);
+          groups.get(vendor).push(model);
+        });
+        const items = [...groups.entries()].map(([vendor, models]) => `
+          <div class="picker-group">${escapeHtml(vendor)}</div>
+          ${models.map((model) => `<button type="button" class="picker-item${model.id === state.windows[index].model ? " active" : ""}" data-model="${escapeHtml(model.id)}"><span>${escapeHtml(model.name && model.name !== model.id ? model.name : model.id)}</span>${model.name && model.name !== model.id ? `<br><small>${escapeHtml(model.id)}</small>` : ""}</button>`).join("")}
+        `).join("");
+        const more = state.models.length > matches.length ? `<div class="picker-note">显示 ${matches.length} 个，继续输入可以缩小范围</div>` : "";
+        pop.querySelector(".picker-list").innerHTML = `${items}${more}<button type="button" class="picker-custom" data-model="__custom__">自定义模型…</button>`;
+      };
+      paint();
+      search.addEventListener("input", paint);
+      search.focus();
+    }
+
+    function chooseModel(index, modelId) {
+      const pane = state.windows[index];
+      closePicker();
+      const custom = document.querySelector(`[data-custom="${index}"]`);
+      const button = document.querySelector(`.picker-btn[data-index="${index}"]`);
+      if (modelId === "__custom__") {
+        if (button) button.textContent = pane.model || "自定义模型";
+        if (custom) {
+          custom.hidden = false;
+          custom.value = pane.model || "";
+          custom.focus();
+        }
+        saveSession();
+        return;
+      }
+      pane.model = modelId;
+      if (custom) custom.hidden = true;
+      if (button) {
+        button.hidden = false;
+        button.textContent = modelLabel(modelId);
+      }
+      saveSession();
+    }
+
+    function textOf(content) {
+      if (typeof content === "string") return content;
+      if (Array.isArray(content)) {
+        return content.map((part) => typeof part === "string" ? part : (part?.text || part?.content || "")).join("");
+      }
+      return "";
+    }
+
+    async function readSse(response, onUpdate) {
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let content = "";
+      let reasoning = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split(/\n/);
+        buffer = lines.pop() || "";
+        lines.forEach((line) => {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith("data:")) return;
+          const data = trimmed.slice(5).trim();
+          if (!data || data === "[DONE]") return;
+          try {
+            const json = JSON.parse(data);
+            const delta = json.choices?.[0]?.delta || {};
+            content += textOf(delta.content);
+            reasoning += textOf(delta.reasoning_content);
+            onUpdate({ content, reasoning });
+          } catch { /* ignore partial chunks */ }
+        });
+      }
+      return { content, reasoning };
+    }
+
+    async function completeChat({ model, messages, signal, onUpdate }) {
+      const response = await fetchImpl(`${state.apiBase}/chat/completions`, {
+        method: "POST",
+        signal,
+        headers: {
+          Authorization: `Bearer ${state.apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ model, messages, stream: true })
+      });
+      if (!response.ok) {
+        const detail = await response.text();
+        let message = detail.slice(0, 400);
+        try {
+          const json = JSON.parse(detail);
+          message = json.error?.message || json.message || message;
+        } catch { /* raw text */ }
+        throw new Error(`请求失败（${response.status}）：${message || "接口没有返回说明"}`);
+      }
+      const type = response.headers.get("content-type") || "";
+      if (!type.includes("text/event-stream") || !response.body) {
+        const json = await response.json();
+        const reply = json.choices?.[0]?.message || {};
+        const result = { content: textOf(reply.content), reasoning: textOf(reply.reasoning_content) };
+        onUpdate(result);
+        return result;
+      }
+      return readSse(response, onUpdate);
+    }
+
+    async function loadModels() {
+      if (window.__skipModelLoad) return;
+      const status = $("model-status");
+      status.textContent = "正在加载模型列表…";
+      const headers = { Authorization: `Bearer ${state.apiKey}` };
+      try {
+        const response = await fetchImpl(`${state.apiBase}/models`, { headers });
+        if (response.ok) {
+          const json = await response.json();
+          const models = (json.data || []).map((model) => ({
+            id: model.id,
+            name: model.name || model.id,
+            vendor: model.owned_by || model.vendor || "其他"
+          })).filter((model) => model.id);
+          if (models.length) {
+            state.models = models;
+            status.textContent = `已加载 ${models.length} 个模型`;
+            assignMissingModels();
+            renderBoard();
+            return;
+          }
+        }
+      } catch { /* try the public catalog next */ }
+      try {
+        const origin = new URL(state.apiBase).origin;
+        const response = await fetchImpl(`${origin}/api/v1/models?type=llm`);
+        if (!response.ok) throw new Error(String(response.status));
+        const json = await response.json();
+        state.models = (json.data || []).map((model) => ({
+          id: model.model_id || model.id,
+          name: model.model_name || model.model_id || model.id,
+          vendor: model.vendor || "其他"
+        })).filter((model) => model.id);
+        status.textContent = state.models.length ? `已加载 ${state.models.length} 个模型` : "没有获取到模型，请自定义模型 ID";
+      } catch {
+        state.models = [];
+        status.textContent = "模型列表加载失败，请自定义模型 ID";
+      }
+      assignMissingModels();
+      renderBoard();
+    }
+
+    function assignMissingModels() {
+      const defaults = pickDefaults(state.models, state.windows.length);
+      state.windows.forEach((pane, index) => {
+        if (!pane.model && defaults[index]) pane.model = defaults[index];
+      });
+    }
+
+    async function sendOne(index, presetText) {
+      const pane = state.windows[index];
+      if (!pane || pane.busy) return false;
+      const box = document.querySelector(`[data-input="${index}"]`);
+      const text = String(presetText != null ? presetText : (box ? box.value : pane.draft)).trim();
+      if (!text) {
+        if (presetText == null) toast("请输入要发送的内容");
+        return false;
+      }
+      if (!pane.model) {
+        toast(`请先为窗口 ${index + 1} 选择模型`);
+        return false;
+      }
+      if (presetText == null && box) {
+        box.value = "";
+        pane.draft = "";
+        box.style.height = "auto";
+      }
+      const userMessage = { role: "user", content: text, time: formatTime(new Date()), model: pane.model };
+      const pending = { role: "assistant", content: "", reasoning: "", time: "", model: pane.model, pending: true };
+      pane.messages.push(userMessage, pending);
+      pane.busy = true;
+      const controller = new AbortController();
+      pane.abort = controller;
+      renderMessages(index);
+      patchComposer(index);
+      saveSession();
+      const history = pane.messages
+        .filter((message) => !message.pending && (message.role === "user" || message.role === "assistant"))
+        .map((message) => ({ role: message.role, content: message.content || message.reasoning || "" }))
+        .filter((message) => message.content);
+      try {
+        const result = await completeChat({
+          model: pane.model,
+          messages: history,
+          signal: controller.signal,
+          onUpdate: (update) => {
+            pending.content = update.content;
+            pending.reasoning = update.reasoning;
+            renderMessages(index);
+          }
+        });
+        pending.content = result.content;
+        pending.reasoning = result.content ? result.reasoning : "";
+        if (!pending.content && result.reasoning) pending.content = result.reasoning;
+        if (!pending.content) pending.content = "（模型没有返回内容）";
+        pending.pending = false;
+        pending.time = formatTime(new Date());
+      } catch (error) {
+        if (error.name === "AbortError") {
+          pane.messages = pane.messages.filter((message) => message !== pending);
+        } else {
+          pending.role = "error";
+          pending.content = error.message || "请求失败";
+          pending.pending = false;
+          pending.time = formatTime(new Date());
+        }
+      } finally {
+        pane.busy = false;
+        pane.abort = null;
+        renderMessages(index);
+        patchComposer(index);
+        saveSession();
+      }
+      return true;
+    }
+
+    async function sendBroadcast() {
+      const input = $("broadcast");
+      const text = input.value.trim();
+      if (!text) {
+        toast("请输入要发送的内容");
+        input.focus();
+        return;
+      }
+      const targets = state.windows.map((pane, index) => ({ pane, index })).filter(({ pane }) => pane.model && !pane.busy);
+      const skipped = state.windows.length - targets.length;
+      if (!targets.length) {
+        toast("没有可以发送的窗口，请先选择模型并等待当前回复结束");
+        return;
+      }
+      input.value = "";
+      state.broadcastDraft = "";
+      input.style.height = "auto";
+      if (skipped) toast(`${skipped} 个窗口正在回复或未选择模型，已跳过`);
+      await Promise.all(targets.map(({ index }) => sendOne(index, text)));
+    }
+
+    function clearWindow(index, { force = false } = {}) {
+      const pane = state.windows[index];
+      if (!pane) return;
+      if (!pane.messages.length && !pane.draft) return;
+      if (!force && !window.confirm("确定清除这个窗口的全部对话吗？")) return;
+      pane.abort?.abort();
+      pane.messages = [];
+      pane.draft = "";
+      pane.busy = false;
+      const input = document.querySelector(`[data-input="${index}"]`);
+      if (input) input.value = "";
+      renderMessages(index);
+      patchComposer(index);
+      saveSession();
+    }
+
+    function exportCurrent(index) {
+      const pane = state.windows[index];
+      const rows = collectRows([pane]);
+      if (!rows.length) {
+        toast("当前窗口还没有可以导出的对话");
+        return;
+      }
+      downloadCsv(rows, `呆呆Chat-窗口${index + 1}-${safeName(pane.model)}-${fileStamp()}.csv`);
+    }
+
+    function exportAll() {
+      const rows = collectRows(state.windows);
+      if (!rows.length) {
+        toast("还没有可以导出的对话");
+        return;
+      }
+      downloadCsv(rows, `呆呆Chat-全部对话-${fileStamp()}.csv`);
+    }
+
+    function autosize(textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
+    }
+
+    function enterChat() {
+      if (!loadSession()) {
+        state.count = 2;
+        state.windows = [blankWindow(""), blankWindow("")];
+      }
+      $("window-count").value = String(state.count);
+      showView("chat");
+      renderBoard();
+      loadModels();
+    }
+
+    function bind() {
+      $("toggle-key").addEventListener("click", () => {
+        const input = $("api-key");
+        const show = input.type === "password";
+        input.type = show ? "text" : "password";
+        $("toggle-key").textContent = show ? "隐藏" : "显示";
+        $("toggle-key").setAttribute("aria-label", show ? "隐藏 API Key" : "显示 API Key");
+      });
+
+      $("setup-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const error = $("form-error");
+        try {
+          const apiKey = $("api-key").value.trim();
+          if (!apiKey) throw new Error("请填写 API Key");
+          state.apiBase = normalizeBase($("api-base").value);
+          state.apiKey = apiKey;
+          $("api-base").value = state.apiBase;
+          saveSettings();
+          error.textContent = "";
+          enterChat();
+        } catch (err) {
+          error.textContent = err.message || "无法保存";
+        }
+      });
+
+      $("edit-key").addEventListener("click", () => {
+        closePicker();
+        showView("setup");
+      });
+      $("export-all").addEventListener("click", exportAll);
+      $("window-count").addEventListener("change", () => setCount($("window-count").value));
+      $("send-all").addEventListener("click", () => { sendBroadcast(); });
+      $("broadcast").addEventListener("input", () => autosize($("broadcast")));
+      $("broadcast").addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+          event.preventDefault();
+          sendBroadcast();
+        }
+      });
+
+      $("board").addEventListener("click", (event) => {
+        const action = event.target.closest("[data-action]");
+        if (!action) return;
+        const index = Number(action.dataset.index);
+        if (action.dataset.action === "toggle-picker") openPicker(index);
+        if (action.dataset.action === "export-one") exportCurrent(index);
+        if (action.dataset.action === "clear") clearWindow(index);
+      });
+      $("board").addEventListener("submit", (event) => {
+        const form = event.target.closest("[data-composer]");
+        if (!form) return;
+        event.preventDefault();
+        sendOne(Number(form.dataset.composer));
+      });
+      $("board").addEventListener("input", (event) => {
+        if (event.target.matches("[data-input]")) autosize(event.target);
+        if (event.target.matches("[data-custom]")) {
+          const index = Number(event.target.dataset.custom);
+          state.windows[index].model = event.target.value.trim();
+          const button = document.querySelector(`.picker-btn[data-index="${index}"]`);
+          if (button) button.textContent = state.windows[index].model || "自定义模型";
+          saveSession();
+        }
+      });
+      $("board").addEventListener("keydown", (event) => {
+        if (!event.target.matches("[data-input]")) return;
+        if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+          event.preventDefault();
+          sendOne(Number(event.target.dataset.input));
+        }
+      });
+      document.addEventListener("click", (event) => {
+        if (state.openPicker < 0) return;
+        if (event.target.closest(".picker-pop") || event.target.closest(".picker-btn")) return;
+        closePicker();
+      });
+      document.addEventListener("click", (event) => {
+        const choice = event.target.closest(".picker-item, .picker-custom");
+        if (!choice || state.openPicker < 0) return;
+        chooseModel(state.openPicker, choice.dataset.model);
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closePicker();
+      });
+      window.addEventListener("resize", closePicker);
+    }
+
+    function fakeSse(text) {
+      const payload = `data: ${JSON.stringify({ choices: [{ delta: { content: text } }] })}\n\ndata: [DONE]\n\n`;
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode(payload));
+          controller.close();
+        }
+      });
+      return new Response(stream, { status: 200, headers: { "content-type": "text/event-stream" } });
+    }
+
+    async function runSelfTest() {
+      const failures = [];
+      const assert = (condition, message) => { if (!condition) failures.push(message); };
+      window.confirm = () => true;
+      window.__skipModelLoad = true;
+      assert(renderMarkdown("<img src=x onerror=alert(1)>").includes("&lt;img"), "escape html");
+      assert(renderMarkdown("**粗体**").includes("<strong>粗体</strong>"), "bold");
+      assert(!renderMarkdown("[x](javascript:alert(1))").includes("href"), "block javascript url");
+      assert(renderMarkdown("[文档](https://example.com)").includes('href="https://example.com"'), "link");
+      assert(renderMarkdown("```js\nconst a = 1;\n```").includes("<pre>"), "code fence");
+      assert(renderMarkdown("- 甲\n- 乙").includes("<li>甲</li>"), "list");
+      const csv = toCsv([["用户", '他说"你好"', "2026-10-06 08:00:00", "gpt"], ["模型", "=1+1", "2026-10-06 08:00:01", "gpt"]]);
+      assert(csv.startsWith("\uFEFF身份,发送内容,发送时间,模型名称"), "csv header");
+      assert(csv.includes('"他说""你好"""'), "csv quotes");
+      assert(csv.includes("'=1+1"), "csv formula");
+
+      state.models = [
+        { id: "model-a", name: "模型 A", vendor: "alpha" },
+        { id: "model-b", name: "模型 B", vendor: "beta" },
+        { id: "model-c", name: "模型 C", vendor: "gamma" },
+        { id: "model-d", name: "模型 D", vendor: "delta" },
+        { id: "model-e", name: "模型 E", vendor: "epsilon" },
+        { id: "model-f", name: "模型 F", vendor: "zeta" }
+      ];
+      state.apiBase = "https://aihubmix.com/v1";
+      state.apiKey = "sk-test";
+      state.count = 2;
+      state.windows = [blankWindow("model-a"), blankWindow("model-b")];
+      showView("chat");
+      renderBoard();
+      const boardRule = (count) => {
+        for (const sheet of document.styleSheets) {
+          for (const rule of sheet.cssRules) {
+            if (rule.selectorText === `.board[data-count="${count}"]`) return rule.style;
+          }
+        }
+        return null;
+      };
+      setCount(4, { force: true });
+      assert(document.querySelectorAll(".window").length === 4, "four windows");
+      assert($("board").dataset.count === "4", "count 4");
+      assert(boardRule(4).gridTemplateRows.replace(/\s/g, "").includes("repeat(2,"), "four uses two rows");
+      assert(boardRule(4).gridTemplateColumns.replace(/\s/g, "").includes("repeat(2,"), "four uses two columns");
+      setCount(6, { force: true });
+      assert(document.querySelectorAll(".window").length === 6, "six windows");
+      assert(boardRule(6).gridTemplateRows.replace(/\s/g, "").includes("repeat(2,"), "six uses two rows");
+      assert(boardRule(6).gridTemplateColumns.replace(/\s/g, "").includes("repeat(3,"), "six uses three columns");
+      setCount(3, { force: true });
+      assert(document.querySelectorAll(".window").length === 3, "three windows");
+      assert(boardRule(3).gridTemplateColumns.replace(/\s/g, "").includes("repeat(3,"), "three columns");
+      assert(!boardRule(3).gridTemplateRows.replace(/\s/g, "").includes("repeat(2,"), "three stays one row");
+      setCount(2, { force: true });
+      assert(boardRule(2).gridTemplateColumns.replace(/\s/g, "").includes("repeat(2,"), "two columns");
+      assert(!boardRule(2).gridTemplateRows.replace(/\s/g, "").includes("repeat("), "two stays one row");
+
+      state.windows[0].messages.push({ role: "user", content: "保留", time: "2026-10-06 08:00:00", model: "model-a" });
+      setCount(4, { force: true });
+      assert(state.windows[0].messages[0].content === "保留" && state.windows.length === 4, "preserve chats");
+
+      const calls = [];
+      window.__fetch = async (_url, options) => {
+        calls.push(JSON.parse(options.body).model);
+        return fakeSse("**你好**");
+      };
+      state.windows.forEach((pane, index) => { pane.model = state.models[index].id; });
+      $("broadcast").value = "一起问";
+      await sendBroadcast();
+      assert(calls.length === 4, `broadcast calls ${calls.length}`);
+      assert(state.windows.every((pane) => pane.messages.some((message) => message.role === "assistant" && message.content === "**你好**")), "all replied");
+      assert(document.querySelector('[data-messages="0"] strong')?.textContent === "你好", "markdown rendered");
+      assert(document.querySelector('[data-messages="0"] .who')?.textContent === "用户", "user identity");
+      assert(document.querySelectorAll('[data-messages="0"] time').length >= 2, "timestamps");
+
+      const solo = document.querySelector('[data-input="1"]');
+      solo.value = "单独继续";
+      await sendOne(1);
+      assert(state.windows[1].messages.filter((message) => message.role === "user").pop().content === "单独继续", "solo send");
+      clearWindow(1, { force: true });
+      assert(state.windows[1].messages.length === 0, "cleared");
+
+      const rows = collectRows(state.windows);
+      assert(rows[0][0] === "用户" && rows[0][1] === "保留" && rows[0][3] === "model-a", "export row");
+      showView("setup");
+      $("api-key").value = "   ";
+      $("setup-form").requestSubmit();
+      assert($("view-setup").classList.contains("active"), "empty key stays on setup");
+      assert($("form-error").textContent.includes("API Key"), "key error");
+
+      const result = $("selftest-result");
+      result.hidden = false;
+      result.dataset.status = failures.length ? "fail" : "pass";
+      result.textContent = failures.length ? `FAIL\n${failures.join("\n")}` : "SELFTEST PASS";
+      document.title = result.textContent.split("\n")[0];
+    }
+
+    function runDemo() {
+      const params = new URLSearchParams(location.search);
+      const count = [2, 3, 4, 6].includes(Number(params.get("demo"))) ? Number(params.get("demo")) : 2;
+      window.__skipModelLoad = true;
+      state.apiBase = "https://aihubmix.com/v1";
+      state.apiKey = "sk-demo";
+      state.models = [
+        { id: "gpt-4o-mini", name: "GPT-4o mini", vendor: "openai" },
+        { id: "claude-sonnet", name: "Claude Sonnet", vendor: "anthropic" },
+        { id: "gemini-flash", name: "Gemini Flash", vendor: "google" },
+        { id: "deepseek-chat", name: "DeepSeek", vendor: "deepseek" },
+        { id: "grok", name: "Grok", vendor: "xai" },
+        { id: "qwen", name: "Qwen", vendor: "alibaba" }
+      ];
+      state.count = count;
+      state.windows = state.models.slice(0, count).map((model, index) => {
+        const pane = blankWindow(model.id);
+        if (index === 0) {
+          pane.messages = [
+            { role: "user", content: "用三句话介绍你自己，并给一个 Markdown 列表。", time: "2026-10-06 09:30:00", model: model.id },
+            { role: "assistant", content: "我是这个窗口里的模型。\n\n- 可以单独继续聊\n- 也可以接收底部的群发\n\n`code` 与 **重点** 都会渲染。", time: "2026-10-06 09:30:02", model: model.id }
+          ];
+        }
+        return pane;
+      });
+      $("model-status").textContent = `已加载 ${state.models.length} 个模型`;
+      showView("chat");
+      renderBoard();
+    }
+
+    bind();
+    loadSettings();
+    const params = new URLSearchParams(location.search);
+    if (params.has("selftest")) runSelfTest();
+    else if (params.has("demo")) runDemo();
+  </script>
+</body>
+</html>
