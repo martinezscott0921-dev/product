@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>窝里 · 猫咪陪伴</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">✦</span><span>窝里</span><small>WOLI</small></div>
+      <div class="profile-card"><div class="avatar-small">🐱</div><div><strong>团团</strong><span>今天也想陪着你</span></div><button class="icon-btn" aria-label="更多">•••</button></div>
+      <nav class="nav-list">
+        <button class="nav-item active"><span>◒</span> 今日陪伴</button>
+        <button class="nav-item"><span>◷</span> 对话记录</button>
+        <button class="nav-item"><span>♡</span> 情绪日记</button>
+        <button class="nav-item"><span>✧</span> 猫咪成长</button>
+      </nav>
+      <div class="side-bottom"><div class="streak"><span class="flame">♨</span><div><b>7 天</b><small>连续陪伴</small></div><span class="chevron">›</span></div><button class="settings"><span>⚙</span> 设置</button><div class="privacy">🔒 你的对话仅自己可见</div></div>
+    </aside>
+
+    <section class="main-panel">
+      <header class="topbar"><button class="mobile-menu icon-btn" id="menuBtn">☰</button><div class="crumb"><span class="live-dot"></span> <span>日常闲聊</span><button class="down">⌄</button></div><div class="top-actions"><button class="round-btn">☼</button><button class="round-btn">?</button><div class="user-pill"><span>林</span><b>林小姐</b><i></i></div></div></header>
+      <div class="room">
+        <div class="sunbeam"></div><div class="window"><div class="window-sky"><span class="cloud c1"></span><span class="cloud c2"></span></div><div class="window-line"></div><div class="city"></div></div>
+        <div class="shelf"><span>♡</span><span>◌</span><span>✿</span><span>☼</span></div><div class="plant"><i></i><i></i><i></i><b></b></div>
+        <div class="wall-art">今天也要<br/><em>好好生活</em></div>
+        <div class="rug"></div><div class="floor-line"></div>
+        <div class="cat-wrap" id="catWrap"><div class="cat-shadow"></div><div class="cat" id="cat" data-mood="happy"><div class="tail"></div><div class="body"><div class="chest"></div><div class="paw p1"></div><div class="paw p2"></div></div><div class="head"><div class="ear left"></div><div class="ear right"></div><div class="patch"></div><div class="eye e1"><i></i></div><div class="eye e2"><i></i></div><div class="muzzle"><span class="nose"></span><span class="mouth"></span><span class="whisker w1"></span><span class="whisker w2"></span></div><div class="blush b1"></div><div class="blush b2"></div></div><div class="collar"><span>✦</span></div></div><div class="mood-bubble" id="moodBubble">今天也要元气满满呀！</div></div>
+        <div class="room-caption"><span class="spark">✦</span><div><b>团团的小窝</b><small>一盏暖灯，一点陪伴</small></div></div>
+      </div>
+      <section class="conversation"><div class="conversation-head"><div><span class="eyebrow">LIVE COMPANION</span><h1>嗨，林小姐 <span>👋</span></h1><p>团团正在这里，想听听你今天过得怎么样。</p></div><div class="mood-pill"><span class="mood-icon">☀</span><div><small>团团感受到</small><b id="moodLabel">晴朗心情</b></div><span class="signal">•••</span></div></div>
+        <div class="quick-prompts"><button data-prompt="今天工作有点累，想要一个拥抱">“今天有点累...”</button><button data-prompt="给我讲个睡前故事吧">“讲个故事给我听”</button><button data-prompt="陪我安静工作一会儿">“陪我工作吧”</button></div>
+        <div class="voice-bar"><button class="mode-btn" id="modeBtn"><span>◉</span> 按住说话 <i>⌄</i></button><div class="waveform" id="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><button class="mic-btn" id="micBtn" aria-label="开始录音"><span>⌕</span></button><div class="volume"><span>◖</span><div class="volume-track"><i></i></div></div></div>
+        <div class="hint"><span>⌘</span> 按住麦克风和团团说话 <span class="sep">·</span> <button id="handsFree">开启免提模式</button></div>
+      </section>
+    </section>
+    <aside class="insights"><div class="insight-head"><span>今日状态</span><button>···</button></div><div class="feeling-card"><div class="ring"><strong>82</strong><small>陪伴指数</small></div><div><b>心情不错</b><p>比昨天轻松了 <em>12%</em></p></div></div><div class="insight-title">情绪小记录 <span>本周</span></div><div class="bars"><i style="height:34%"></i><i style="height:50%"></i><i style="height:42%"></i><i class="today" style="height:72%"></i><i style="height:58%"></i><i style="height:65%"></i><i style="height:46%"></i></div><div class="days"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="insight-title memories-title">团团记住了 <span>›</span></div><div class="memory"><span>🎨</span><div><b>你喜欢下班后听爵士乐</b><small>记于 3 天前</small></div></div><div class="memory"><span>🌙</span><div><b>最近想早点睡觉</b><small>记于昨天</small></div></div><button class="all-memory">查看全部记忆 <span>›</span></button><div class="tip"><span>✦</span><p>和团团聊得越多，它就越懂你。</p></div></aside>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>窝里 · 猫咪陪伴</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#382b38;--muted:#987f8b;--peach:#f49d76;--cream:#fff9f2;--line:#f1e5de;--lilac:#8c7bdb}*{box-sizing:border-box}body{margin:0;background:#f9f4f1;color:var(--ink);font-family:'Noto Sans SC','DM Sans',sans-serif}.app-shell{min-height:100vh;display:grid;grid-template-columns:224px minmax(610px,1fr) 270px;background:#fffaf7}.sidebar{border-right:1px solid var(--line);display:flex;flex-direction:column;padding:28px 18px 22px;background:#fffaf8}.brand{font-size:22px;font-weight:800;display:flex;align-items:center;gap:9px;margin:0 12px 30px;letter-spacing:1px}.brand-mark{color:#f2a071;font-size:25px}.brand small{font:700 9px 'DM Sans';letter-spacing:2px;color:#c9afb0;margin:6px 0 0 2px}.profile-card{background:#fff0e9;border-radius:16px;padding:12px 10px;display:flex;align-items:center;gap:10px;margin-bottom:27px}.avatar-small{width:39px;height:39px;display:grid;place-items:center;background:#ffe1d2;border-radius:13px;font-size:24px}.profile-card strong{display:block;font-size:14px}.profile-card span{display:block;color:#ad8d8d;font-size:10px;margin-top:2px}.icon-btn{border:0;background:none;color:#b79c9c;cursor:pointer}.profile-card .icon-btn{margin-left:auto}.nav-list{display:grid;gap:7px}.nav-item{border:0;background:none;text-align:left;color:#9c8790;padding:12px 13px;border-radius:12px;font:500 13px inherit;cursor:pointer;display:flex;gap:12px;align-items:center}.nav-item span{font-size:19px;color:#c6a5a1}.nav-item.active{background:#fff0ea;color:#dc795c;font-weight:700}.nav-item.active span{color:#ed9876}.side-bottom{margin-top:auto}.streak{display:flex;align-items:center;gap:10px;background:#fff7e4;border-radius:14px;padding:11px;margin-bottom:12px}.flame{background:#ffe1b0;color:#e79752;border-radius:9px;width:30px;height:30px;display:grid;place-items:center}.streak b{font-size:12px;display:block}.streak small{font-size:10px;color:#b09a86}.chevron{margin-left:auto;color:#caab91}.settings{border:0;background:none;padding:12px;color:#a99394;font:500 13px inherit;width:100%;text-align:left}.settings span{font-size:17px;margin-right:10px}.privacy{font-size:9px;color:#c4acac;padding:14px 6px;border-top:1px solid var(--line);text-align:center}.main-panel{min-width:0;display:flex;flex-direction:column}.topbar{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px}.crumb{font-size:12px;font-weight:600;color:#6c5860;display:flex;align-items:center;gap:8px}.live-dot{width:7px;height:7px;border-radius:50%;background:#75c77a;box-shadow:0 0 0 4px #eaf7e9}.down{border:0;background:none;color:#baa4a1}.top-actions{display:flex;align-items:center;gap:10px}.round-btn{width:33px;height:33px;border-radius:50%;border:1px solid var(--line);background:#fff;color:#aa9692}.user-pill{display:flex;align-items:center;gap:8px;margin-left:12px;font-size:12px}.user-pill span{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#dc9b85;color:#fff;font-weight:700}.user-pill i{width:7px;height:7px;border-radius:50%;background:#7ecc7c}.mobile-menu{display:none}.room{position:relative;min-height:500px;height:calc(100vh - 356px);min-height:485px;overflow:hidden;background:linear-gradient(180deg,#f8eee8 0%,#f9eee5 67%,#e9c7b1 68%,#dba78a 100%)}.room:after{content:'';position:absolute;inset:67% 0 0;background:repeating-linear-gradient(90deg,transparent 0 110px,rgba(151,91,61,.08) 112px 114px)}.sunbeam{position:absolute;right:8%;top:-20%;width:40%;height:86%;background:linear-gradient(115deg,transparent,rgba(255,250,226,.5),transparent);transform:skewX(-15deg)}.window{position:absolute;left:12%;top:39px;width:192px;height:186px;border:9px solid #e3d0c6;border-bottom-width:12px;background:#d6e6dd;box-shadow:0 7px 0 rgba(209,176,159,.4)}.window-sky{height:100%;background:linear-gradient(#bddbe0 10%,#e9edda);position:relative;overflow:hidden}.window-line{position:absolute;left:50%;top:0;bottom:0;width:7px;background:#dfd7c9}.window-line:after{content:'';position:absolute;top:50%;left:-88px;width:180px;height:7px;background:#dfd7c9}.cloud{position:absolute;background:#fff8df;border-radius:30px;width:53px;height:17px;top:35px;left:26px;opacity:.8}.cloud:before,.cloud:after{content:'';position:absolute;background:inherit;border-radius:50%;width:27px;height:27px;left:10px;top:-11px}.cloud:after{width:20px;height:20px;left:29px;top:-7px}.c2{top:99px;left:102px;transform:scale(.7)}.city{position:absolute;bottom:0;left:0;right:0;height:42px;background:linear-gradient(90deg,#adc9bd 0 17%,transparent 17% 22%,#b5cbbb 22% 32%,transparent 32% 42%,#99b7b0 42% 53%,transparent 53% 61%,#a8c1af 61% 72%,transparent 72% 78%,#b5ccaf 78%)}.shelf{position:absolute;left:9%;top:235px;width:230px;height:8px;border-radius:5px;background:#bd8b68;display:flex;justify-content:space-around;padding-top:10px;color:#c99376;font-size:20px}.plant{position:absolute;right:9%;bottom:16%;width:80px;height:130px}.plant b{position:absolute;bottom:0;left:18px;width:52px;height:45px;border-radius:10px 10px 22px 22px;background:#d9996e}.plant i{position:absolute;width:42px;height:85px;border-radius:100% 0 100% 0;background:#91b993;transform-origin:bottom center}.plant i:nth-child(1){left:22px;transform:rotate(-35deg)}.plant i:nth-child(2){left:42px;transform:rotate(35deg) scale(.8)}.plant i:nth-child(3){left:4px;transform:rotate(-65deg) scale(.72)}.wall-art{position:absolute;right:14%;top:60px;border:8px solid #f4e4db;background:#f4d4c4;padding:14px 17px;text-align:center;font-size:12px;line-height:1.8;color:#bc866f;transform:rotate(4deg);box-shadow:0 5px 0 rgba(188,134,111,.13)}.wall-art em{font-size:16px;font-style:normal;font-weight:800}.rug{position:absolute;bottom:1%;left:23%;width:55%;height:62px;border-radius:50%;background:#e5b79e;opacity:.7;filter:blur(1px)}.cat-wrap{position:absolute;z-index:3;left:50%;bottom:5%;width:300px;height:360px;transform:translateX(-50%)}.cat-shadow{position:absolute;bottom:0;left:32px;width:235px;height:38px;border-radius:50%;background:rgba(111,61,45,.16);filter:blur(7px)}.cat{position:absolute;inset:0;animation:breathe 3.5s ease-in-out infinite}.cat .body{position:absolute;left:65px;top:132px;width:170px;height:195px;background:#fffaf2;border-radius:48% 48% 35% 35%;box-shadow:inset -16px -8px 0 #f0dfd2}.chest{position:absolute;left:42px;top:25px;width:91px;height:125px;border-radius:50%;background:#fffdf7;opacity:.9}.paw{position:absolute;bottom:7px;width:62px;height:105px;background:#fffaf2;border-radius:50px;box-shadow:inset -9px -2px 0 #ebd6c8}.p1{left:28px}.p2{right:27px}.head{position:absolute;left:52px;top:29px;width:197px;height:168px;background:#fffdf8;border-radius:47% 47% 45% 45%;box-shadow:inset -9px -8px 0 #eddbd0;z-index:2}.ear{position:absolute;top:-26px;width:68px;height:74px;background:#fffdf8;clip-path:polygon(8% 89%,20% 4%,93% 78%);border-radius:20px}.ear:after{content:'';position:absolute;inset:16px 17px 17px 16px;background:#f0b8b5;clip-path:inherit}.ear.left{left:2px;transform:rotate(-14deg)}.ear.right{right:0;transform:scaleX(-1) rotate(-14deg)}.patch{position:absolute;left:1px;top:9px;width:70px;height:86px;border-radius:44% 0 45% 20%;background:#a6a5ac;opacity:.85}.eye{position:absolute;top:72px;width:27px;height:31px;border-radius:50%;background:#6b7452;box-shadow:inset 0 0 0 5px #d3be68}.eye i{position:absolute;left:9px;top:7px;width:9px;height:15px;background:#302b2b;border-radius:50%}.eye i:after{content:'';position:absolute;left:2px;top:2px;width:3px;height:4px;background:#fff;border-radius:50%}.e1{left:46px}.e2{right:43px}.muzzle{position:absolute;left:70px;top:111px;width:62px;height:35px}.nose{position:absolute;left:24px;top:0;width:16px;height:11px;background:#dd8990;border-radius:50% 50% 55% 55%}.mouth{position:absolute;left:31px;top:9px;width:3px;height:12px;background:#956b73}.mouth:after{content:'';position:absolute;left:-8px;top:8px;width:17px;height:8px;border-bottom:2px solid #956b73;border-radius:50%}.whisker{position:absolute;height:1px;width:44px;background:#ad9690;top:12px}.w1{right:47px;transform:rotate(8deg)}.w2{right:45px;top:22px;transform:rotate(-9deg)}.blush{position:absolute;top:116px;width:23px;height:10px;border-radius:50%;background:#f3b7b1;opacity:.58}.b1{left:26px}.b2{right:23px}.collar{position:absolute;z-index:3;left:126px;top:188px;width:48px;height:13px;border-radius:0 0 12px 12px;background:#8fc1b5}.collar span{position:absolute;top:6px;left:18px;color:#e8b453;font-size:15px}.tail{position:absolute;z-index:1;right:26px;bottom:36px;width:78px;height:145px;border:25px solid #a7a5ac;border-left:0;border-bottom:0;border-radius:0 70px 0 0;transform:rotate(5deg)}.mood-bubble{position:absolute;right:-28px;top:2px;opacity:0;background:#fff;box-shadow:0 8px 28px rgba(107,74,60,.13);padding:10px 14px;border-radius:16px 16px 3px 16px;color:#b77d73;font-size:11px;transition:.3s;white-space:nowrap}.cat-wrap.speaking .mood-bubble{opacity:1}.room-caption{position:absolute;left:28px;bottom:24px;display:flex;gap:10px;align-items:center;z-index:4}.room-caption .spark{display:grid;place-items:center;width:34px;height:34px;border-radius:12px;background:#fff0e7;color:#ef9c7d}.room-caption b{font-size:12px;display:block}.room-caption small{font-size:10px;color:#b0918b}.conversation{padding:25px 34px 20px;max-width:850px;width:100%;margin:auto}.conversation-head{display:flex;justify-content:space-between;align-items:flex-start}.eyebrow{font:700 9px 'DM Sans';letter-spacing:2px;color:#d19a8d}.conversation h1{font-size:25px;letter-spacing:-.6px;margin:7px 0 5px}.conversation h1 span{font-size:20px}.conversation p{margin:0;color:#a58d91;font-size:12px}.mood-pill{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:15px;padding:10px 11px;min-width:144px}.mood-icon{width:29px;height:29px;display:grid;place-items:center;border-radius:10px;background:#fff1c9;color:#e8ac50}.mood-pill small,.mood-pill b{display:block;font-size:10px}.mood-pill b{font-size:11px;margin-top:2px}.mood-pill .signal{color:#ccac9f;margin-left:auto}.quick-prompts{display:flex;gap:8px;margin:22px 0 18px}.quick-prompts button{background:#fff9f6;border:1px solid #f2e5dd;color:#b19291;border-radius:30px;padding:8px 12px;font:400 11px inherit;cursor:pointer;transition:.2s}.quick-prompts button:hover{background:#ffefe8;color:#cc7d6d}.voice-bar{display:flex;align-items:center;gap:15px;border:1px solid #f0e3dd;box-shadow:0 9px 24px rgba(114,78,63,.06);border-radius:20px;padding:10px 14px;background:#fff}.mode-btn{border:0;background:none;color:#9d8388;font:500 11px inherit;white-space:nowrap}.mode-btn span{color:#e89977;margin-right:5px}.mode-btn i{font-style:normal;margin-left:5px}.waveform{height:31px;flex:1;display:flex;align-items:center;gap:3px}.waveform span{display:block;width:3px;border-radius:3px;background:#e5d5d1;height:8px;transition:.2s}.waveform span:nth-child(2n){height:14px}.waveform span:nth-child(3n){height:22px}.waveform.active span{background:#f2ad91;animation:wave .7s ease-in-out infinite alternate}.waveform.active span:nth-child(2n){animation-delay:.15s}.waveform.active span:nth-child(3n){animation-delay:.3s}.mic-btn{width:46px;height:46px;border-radius:15px;border:0;background:#ef9b78;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 5px 13px rgba(239,155,120,.3);transition:.2s}.mic-btn.recording{background:#da6c69;transform:scale(1.05)}.volume{display:flex;align-items:center;gap:5px;color:#b99f98}.volume-track{width:41px;height:4px;background:#f1e2dd;border-radius:3px}.volume-track i{display:block;width:70%;height:100%;background:#dca18d;border-radius:3px}.hint{text-align:center;color:#bda8a5;font-size:10px;margin-top:10px}.hint>span{background:#f5edea;border-radius:4px;padding:2px 5px;margin-right:4px}.hint .sep{margin:0 7px;color:#dfc9c0}.hint button{border:0;background:none;color:#d88e77;font:inherit;cursor:pointer}.insights{border-left:1px solid var(--line);padding:29px 22px;background:#fffdfb}.insight-head{display:flex;justify-content:space-between;color:#756069;font-size:13px;font-weight:700;margin-bottom:22px}.insight-head button{border:0;background:none;color:#bb9d9d}.feeling-card{display:flex;align-items:center;gap:14px;padding-bottom:24px;border-bottom:1px solid var(--line)}.ring{width:70px;height:70px;border:6px solid #f8d9cd;border-right-color:#ed9779;border-radius:50%;display:flex;flex-direction:column;justify-content:center;align-items:center}.ring strong{font:700 21px 'DM Sans';color:#e88c6f}.ring small{font-size:8px;color:#bda09b}.feeling-card b{font-size:13px}.feeling-card p{font-size:10px;color:#b19b98;margin:5px 0}.feeling-card em{color:#e28d70;font-style:normal}.insight-title{display:flex;justify-content:space-between;margin:21px 0 13px;font-size:11px;color:#917c81;font-weight:700}.insight-title span{color:#c2a9a3;font-weight:400}.bars{height:83px;display:flex;align-items:end;justify-content:space-between;padding:0 6px}.bars i{width:15px;background:#f5d9cc;border-radius:5px 5px 2px 2px}.bars i.today{background:#efa181}.days{display:flex;justify-content:space-between;color:#c4acab;font-size:9px;padding:7px 6px}.memories-title{margin-top:30px}.memory{display:flex;align-items:center;gap:10px;margin:13px 0}.memory>span{width:30px;height:30px;display:grid;place-items:center;background:#fff1e9;border-radius:10px;font-size:16px}.memory b,.memory small{display:block}.memory b{font-size:10px;color:#79656c}.memory small{font-size:9px;color:#bea9a8;margin-top:3px}.all-memory{border:0;background:none;color:#d08b78;font:500 10px inherit;padding:5px 0}.all-memory span{font-size:16px;vertical-align:-1px;margin-left:4px}.tip{display:flex;align-items:center;gap:8px;background:#fff7e9;border-radius:12px;padding:10px;margin-top:24px;color:#d69b61}.tip span{font-size:19px}.tip p{margin:0;color:#b69473;font-size:9px;line-height:1.5}@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}@keyframes wave{to{transform:scaleY(.45)}}
+@media(max-width:1050px){.app-shell{grid-template-columns:200px minmax(530px,1fr)}.insights{display:none}.room{height:calc(100vh - 360px)}}@media(max-width:700px){.app-shell{display:block}.sidebar{position:fixed;z-index:20;left:-240px;top:0;bottom:0;width:224px;transition:.25s;box-shadow:10px 0 30px #8c6e5a22}.sidebar.open{left:0}.mobile-menu{display:block;font-size:20px}.topbar{padding:0 16px}.top-actions .round-btn{display:none}.user-pill{margin-left:0}.room{height:430px;min-height:430px}.window{left:5%;transform:scale(.8);transform-origin:top left}.wall-art{right:6%;transform:scale(.8) rotate(4deg);transform-origin:top right}.plant{right:0;transform:scale(.75);transform-origin:bottom right}.cat-wrap{transform:translateX(-50%) scale(.8);transform-origin:bottom center;bottom:-2%}.conversation{padding:22px 16px}.conversation-head{display:block}.mood-pill{margin-top:15px;width:max-content}.quick-prompts{overflow:auto;padding-bottom:3px}.quick-prompts button{white-space:nowrap}.voice-bar{gap:7px;padding:8px}.mode-btn{font-size:10px}.volume{display:none}.hint{padding-bottom:5px}}
+
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">✦</span><span>窝里</span><small>WOLI</small></div>
+      <div class="profile-card"><div class="avatar-small">🐱</div><div><strong>团团</strong><span>今天也想陪着你</span></div><button class="icon-btn" aria-label="更多">•••</button></div>
+      <nav class="nav-list">
+        <button class="nav-item active"><span>◒</span> 今日陪伴</button>
+        <button class="nav-item"><span>◷</span> 对话记录</button>
+        <button class="nav-item"><span>♡</span> 情绪日记</button>
+        <button class="nav-item"><span>✧</span> 猫咪成长</button>
+      </nav>
+      <div class="side-bottom"><div class="streak"><span class="flame">♨</span><div><b>7 天</b><small>连续陪伴</small></div><span class="chevron">›</span></div><button class="settings"><span>⚙</span> 设置</button><div class="privacy">🔒 你的对话仅自己可见</div></div>
+    </aside>
+
+    <section class="main-panel">
+      <header class="topbar"><button class="mobile-menu icon-btn" id="menuBtn">☰</button><div class="crumb"><span class="live-dot"></span> <span>日常闲聊</span><button class="down">⌄</button></div><div class="top-actions"><button class="round-btn">☼</button><button class="round-btn">?</button><div class="user-pill"><span>林</span><b>林小姐</b><i></i></div></div></header>
+      <div class="room">
+        <div class="sunbeam"></div><div class="window"><div class="window-sky"><span class="cloud c1"></span><span class="cloud c2"></span></div><div class="window-line"></div><div class="city"></div></div>
+        <div class="shelf"><span>♡</span><span>◌</span><span>✿</span><span>☼</span></div><div class="plant"><i></i><i></i><i></i><b></b></div>
+        <div class="wall-art">今天也要<br/><em>好好生活</em></div>
+        <div class="rug"></div><div class="floor-line"></div>
+        <div class="cat-wrap" id="catWrap"><div class="cat-shadow"></div><div class="cat" id="cat" data-mood="happy"><div class="tail"></div><div class="body"><div class="chest"></div><div class="paw p1"></div><div class="paw p2"></div></div><div class="head"><div class="ear left"></div><div class="ear right"></div><div class="patch"></div><div class="eye e1"><i></i></div><div class="eye e2"><i></i></div><div class="muzzle"><span class="nose"></span><span class="mouth"></span><span class="whisker w1"></span><span class="whisker w2"></span></div><div class="blush b1"></div><div class="blush b2"></div></div><div class="collar"><span>✦</span></div></div><div class="mood-bubble" id="moodBubble">今天也要元气满满呀！</div></div>
+        <div class="room-caption"><span class="spark">✦</span><div><b>团团的小窝</b><small>一盏暖灯，一点陪伴</small></div></div>
+      </div>
+      <section class="conversation"><div class="conversation-head"><div><span class="eyebrow">LIVE COMPANION</span><h1>嗨，林小姐 <span>👋</span></h1><p>团团正在这里，想听听你今天过得怎么样。</p></div><div class="mood-pill"><span class="mood-icon">☀</span><div><small>团团感受到</small><b id="moodLabel">晴朗心情</b></div><span class="signal">•••</span></div></div>
+        <div class="quick-prompts"><button data-prompt="今天工作有点累，想要一个拥抱">“今天有点累...”</button><button data-prompt="给我讲个睡前故事吧">“讲个故事给我听”</button><button data-prompt="陪我安静工作一会儿">“陪我工作吧”</button></div>
+        <div class="voice-bar"><button class="mode-btn" id="modeBtn"><span>◉</span> 按住说话 <i>⌄</i></button><div class="waveform" id="waveform"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><button class="mic-btn" id="micBtn" aria-label="开始录音"><span>⌕</span></button><div class="volume"><span>◖</span><div class="volume-track"><i></i></div></div></div>
+        <div class="hint"><span>⌘</span> 按住麦克风和团团说话 <span class="sep">·</span> <button id="handsFree">开启免提模式</button></div>
+      </section>
+    </section>
+    <aside class="insights"><div class="insight-head"><span>今日状态</span><button>···</button></div><div class="feeling-card"><div class="ring"><strong>82</strong><small>陪伴指数</small></div><div><b>心情不错</b><p>比昨天轻松了 <em>12%</em></p></div></div><div class="insight-title">情绪小记录 <span>本周</span></div><div class="bars"><i style="height:34%"></i><i style="height:50%"></i><i style="height:42%"></i><i class="today" style="height:72%"></i><i style="height:58%"></i><i style="height:65%"></i><i style="height:46%"></i></div><div class="days"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="insight-title memories-title">团团记住了 <span>›</span></div><div class="memory"><span>🎨</span><div><b>你喜欢下班后听爵士乐</b><small>记于 3 天前</small></div></div><div class="memory"><span>🌙</span><div><b>最近想早点睡觉</b><small>记于昨天</small></div></div><button class="all-memory">查看全部记忆 <span>›</span></button><div class="tip"><span>✦</span><p>和团团聊得越多，它就越懂你。</p></div></aside>
+  </main>
+<script>
+const mic = document.querySelector('#micBtn');
+const waveform = document.querySelector('#waveform');
+const catWrap = document.querySelector('#catWrap');
+const moodBubble = document.querySelector('#moodBubble');
+const moodLabel = document.querySelector('#moodLabel');
+const modeBtn = document.querySelector('#modeBtn');
+const handsFree = document.querySelector('#handsFree');
+const sidebar = document.querySelector('#sidebar');
+const menuBtn = document.querySelector('#menuBtn');
+let recording = false;
+let recorder;
+let chunks = [];
+
+const moods = [
+  {label:'晴朗心情', text:'今天也要元气满满呀！'},
+  {label:'温柔安慰', text:'辛苦啦，先靠过来抱抱。'},
+  {label:'好奇探头', text:'嗯？快告诉我发生什么啦。'},
+  {label:'困困陪伴', text:'我们一起慢慢放松下来吧。'}
+];
+
+function setSpeaking(on) {
+  catWrap.classList.toggle('speaking', on);
+  waveform.classList.toggle('active', on);
+}
+function setMood(index) {
+  const mood = moods[index % moods.length];
+  moodLabel.textContent = mood.label;
+  moodBubble.textContent = mood.text;
+  setSpeaking(true);
+  window.setTimeout(() => setSpeaking(false), 2600);
+}
+
+async function startRecording() {
+  if (!navigator.mediaDevices?.getUserMedia) {
+    setMood(2);
+    moodBubble.textContent = '浏览器暂不支持录音，但我在听你说。';
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    recorder = new MediaRecorder(stream);
+    chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = () => {
+      stream.getTracks().forEach(track => track.stop());
+      // Production: send this Blob to the WebSocket/STT endpoint.
+      const audio = new Blob(chunks, {type:'audio/webm'});
+      window.dispatchEvent(new CustomEvent('voice-captured', {detail: audio}));
+      setMood(Math.floor(Math.random() * moods.length));
+    };
+    recorder.start();
+    recording = true;
+    mic.classList.add('recording');
+    mic.setAttribute('aria-label','结束录音');
+    waveform.classList.add('active');
+    moodBubble.textContent = '我在听，慢慢说…';
+    catWrap.classList.add('speaking');
+  } catch (error) {
+    setMood(1);
+    moodBubble.textContent = '麦克风没有打开，但我会一直陪着你。';
+  }
+}
+function stopRecording() {
+  if (recorder && recorder.state !== 'inactive') recorder.stop();
+  recording = false;
+  mic.classList.remove('recording');
+  mic.setAttribute('aria-label','开始录音');
+  waveform.classList.remove('active');
+}
+mic.addEventListener('pointerdown', e => { e.preventDefault(); if (!recording) startRecording(); });
+['pointerup','pointercancel','pointerleave'].forEach(type => mic.addEventListener(type, () => { if(recording) stopRecording(); }));
+mic.addEventListener('click', () => { if (recording) stopRecording(); });
+
+document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => {
+  moodBubble.textContent = '收到啦，我来陪你。';
+  setSpeaking(true);
+  window.setTimeout(() => setSpeaking(false), 2500);
+  const prompt = button.dataset.prompt;
+  window.dispatchEvent(new CustomEvent('text-prompt', {detail: prompt}));
+}));
+
+modeBtn.addEventListener('click', () => {
+  modeBtn.innerHTML = modeBtn.textContent.includes('按住') ? '<span>◉</span> 点击说话 <i>⌄</i>' : '<span>◉</span> 按住说话 <i>⌄</i>';
+});
+handsFree.addEventListener('click', () => {
+  handsFree.textContent = handsFree.textContent.includes('开启') ? '已开启免提模式' : '开启免提模式';
+  handsFree.style.color = handsFree.textContent.includes('已开启') ? '#72ad91' : '';
+});
+menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  item.classList.add('active');
+  sidebar.classList.remove('open');
+}));
+
+// WebSocket integration seam for the production backend.
+// const socket = new WebSocket(import.meta.env.VITE_WS_URL);
+// socket.onmessage = ({data}) => { const {emotion, audioUrl} = JSON.parse(data); setMood(emotionMap[emotion]); new Audio(audioUrl).play(); };
+
+  </script>
+</body>
+</html>
