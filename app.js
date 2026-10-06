@@ -17,6 +17,17 @@ const moods = [
   {label:'好奇探头', text:'嗯？快告诉我发生什么啦。'},
   {label:'困困陪伴', text:'我们一起慢慢放松下来吧。'}
 ];
+const demoReplies = {
+  '今天工作有点累，想要一个拥抱':'辛苦啦，先靠过来抱抱。今天已经做得很好了。',
+  '给我讲个睡前故事吧':'从前有一只小猫，最喜欢把月光收进尾巴里，陪每个晚安的人做一个甜甜的梦。',
+  '陪我安静工作一会儿':'好呀，我就在旁边安静陪着你。每完成一小步，都值得夸夸。'
+};
+function reply(text) {
+  moodBubble.textContent = text;
+  setSpeaking(true);
+  window.setTimeout(() => setSpeaking(false), 3500);
+  if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(text)); }
+}
 
 function setSpeaking(on) {
   catWrap.classList.toggle('speaking', on);
@@ -72,12 +83,10 @@ mic.addEventListener('pointerdown', e => { e.preventDefault(); if (!recording) s
 mic.addEventListener('click', () => { if (recording) stopRecording(); });
 
 document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => {
-  moodBubble.textContent = '收到啦，我来陪你。';
-  setSpeaking(true);
-  window.setTimeout(() => setSpeaking(false), 2500);
   const prompt = button.dataset.prompt;
+  reply(demoReplies[prompt] || '收到啦，我来陪你。');
   window.dispatchEvent(new CustomEvent('text-prompt', {detail: prompt}));
-  fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:prompt})}).then(r=>r.json()).then(data=>{ if(data.reply){ moodBubble.textContent=data.reply; setSpeaking(true); setTimeout(()=>setSpeaking(false),3500); } }).catch(()=>{});
+  fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message:prompt})}).then(r=>r.ok ? r.json() : null).then(data=>{ if(data?.reply) reply(data.reply); }).catch(()=>{});
 }));
 
 modeBtn.addEventListener('click', () => {
